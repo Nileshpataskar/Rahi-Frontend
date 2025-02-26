@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { productData } from "./productData";
+import { Button } from "../ui/button";
 
 const OurProducts = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -66,7 +67,7 @@ const OurProducts = () => {
   const duration = productData.length * 2; // adjust duration per item
 
   return (
-    <section className="relative bg-secondary py-16 sm:py-20">
+    <section className="relative bg-white py-16 sm:py-20">
       <div className="mx-auto max-w-[95%] px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -74,17 +75,17 @@ const OurProducts = () => {
           transition={{ duration: 0.6 }}
           className="mb-12 text-center sm:mb-16"
         >
-          <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl md:text-5xl">
+          <h2 className="text-3xl font-bold tracking-tight text-gray-900 ">
             Our Products
           </h2>
-          <p className="mt-4 text-base text-gray-600 sm:text-lg md:text-xl">
+          <p className="mt-4 text-base text-gray-600 text-muted-foreground">
             Discover Our Top-Selling Products That Redefine Quality and
             Innovation
           </p>
         </motion.div>
 
         <div
-          className="relative mx-auto max-w-7xl"
+          className="relative mx-auto w-full bg-white p-2"
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
         >
@@ -106,54 +107,43 @@ const OurProducts = () => {
           </button>
 
           {/* Carousel */}
-          <div className="overflow-hidden rounded-3xl bg-white/50 p-4 backdrop-blur-sm">
+          <div className="overflow-hidden rounded-xl bg-white/50 p-4 backdrop-blur-sm">
             <motion.div
               className="flex"
               initial={{ x: 0 }}
               animate={{ x: `-${currentIndex * (100 / itemsToShow)}%` }}
-              transition={{ type: "spring", stiffness: 150, damping: 30 }}
+              transition={{ type: "spring", stiffness: 150, damping: 80 }}
             >
               {extendedData.map((product, index) => (
                 <motion.div
                   key={index}
                   style={{ width: `${itemWidthPercent}%` }}
                   className="flex-shrink-0 px-2 sm:px-3 md:px-4"
-                  whileHover={{ scale: 1.04, transition: { duration: 0.2 } }}
+                  whileHover={{ scale: 1.02 }}
+                  transition={{ duration: 0.2 }}
                 >
-                  <div className="group relative h-full cursor-pointer overflow-hidden rounded-3xl border border-gray-400 bg-white transition-all duration-300 hover:shadow-four">
+                  <div className="group relative h-full cursor-pointer overflow-hidden rounded-xl border border-gray-400 bg-white transition-all duration-300 hover:shadow-four">
                     <div className="relative h-48 w-full overflow-hidden bg-gray-300/50 p-5 sm:h-56 md:h-64">
                       <Image
                         src={product.src}
                         alt={product.title}
-                        layout="fill"
-                        style={{ objectFit: "cover" }} // ✅ Use style instead of objectFit prop
-                        className="m-5 transform transition-transform duration-500 group-hover:scale-110"
+                        fill
+                        style={{ objectFit: "cover" }}
+                        className="m-5 transform transition-transform duration-500 "
                       />
-
-                      {/* Overlay gradient that appears on hover */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 transition-all duration-300 group-hover:opacity-100" />
                     </div>
 
                     <div className="relative z-10 p-4 sm:p-5 md:p-6">
-                      <div className="mb-2">
-                        <span className="inline-block rounded-full bg-indigo-100 px-2.5 py-1 text-xs font-medium text-indigo-800">
-                          Recommended
-                        </span>
-                      </div>
-                      <h3 className="text-lg font-semibold text-gray-900 sm:text-xl md:text-2xl">
+                      <h3 className="text-lg font-semibold text-gray-900">
                         {product.title}
                       </h3>
-                      <div className="mt-4 flex items-center space-x-2">
-                        <span className="text-sm font-medium text-indigo-600 transition-colors group-hover:text-indigo-700">
+                      <p className="line-clamp-2 text-sm text-gray-600">
+                        {product.description}
+                      </p>
+                      <div className="flex items-center justify-between pt-2">
+                        <Button variant="outline" size="sm">
                           View Details
-                        </span>
-                        <motion.div
-                          className="rounded-full bg-indigo-100 p-1"
-                          whileHover={{ x: 5 }}
-                          transition={{ duration: 0.2 }}
-                        >
-                          <ArrowRight className="h-4 w-4 text-indigo-600" />
-                        </motion.div>
+                        </Button>
                       </div>
                     </div>
                   </div>

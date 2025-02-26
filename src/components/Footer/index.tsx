@@ -24,7 +24,8 @@ const Footer = () => {
                 alt="Rahi Industries Logo"
                 width={180}
                 height={100}
-                className="block  w-32 sm:w-48"
+                className="block w-32 sm:w-48"
+                priority
               />
             </Link>
             <p className="text-sm text-gray-400 md:text-base">
@@ -39,18 +40,22 @@ const Footer = () => {
               Quick Links
             </h3>
             <ul className="space-y-2">
-              {["Home", "Products", "Download", "Company", "Contact"].map(
-                (item) => (
-                  <li key={item}>
-                    <a
-                      href={`/${item.toLowerCase()}`}
-                      className=" hover:text-blue-500 text-gray-400 transition-colors duration-200"
-                    >
-                      {item}
-                    </a>
-                  </li>
-                ),
-              )}
+              {[
+                { label: "Home", href: "/" },
+                // { label: "Products", href: "/product" },
+                { label: "Download", href: "/download" },
+                { label: "About us", href: "/about" },
+                { label: "Contact", href: "/contact" },
+              ].map((item) => (
+                <li key={item.label}>
+                  <a
+                    href={item.href}
+                    className="text-gray-400 transition-colors duration-200 hover:text-blue-500"
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
 
@@ -93,7 +98,7 @@ const Footer = () => {
         </div>
 
         {/* Copyright */}
-        <div className="mt-8 border-t border-gray-300 pt-4 text-center text-sm text-gray-700">
+        <div className="mt-8 border-t border-gray-300 pt-4 text-center text-sm text-white">
           <p>
             © {new Date().getFullYear()} Rahi Industries. All rights reserved.
           </p>

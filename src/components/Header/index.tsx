@@ -39,8 +39,6 @@ const Header = () => {
     return () => window.removeEventListener("scroll", handleStickyNavbar);
   }, []);
 
-
-
   return (
     <>
       <header
@@ -59,24 +57,9 @@ const Header = () => {
                   sticky ? "py-2" : "py-5"
                 }`}
               >
-                {pathUrl !== "/" ? (
-                  <>
-                    <Image
-                      src="/assets/Rahi_Logo.png"
-                      alt="logo"
-                      width={240}
-                      height={30}
-                      className="header-logo w-full dark:hidden"
-                    />
-                    <Image
-                      src="/assets/Rahi_Logo.png"
-                      alt="logo"
-                      width={240}
-                      height={30}
-                      className="header-logo hidden w-full dark:block"
-                    />
-                  </>
-                ) : (
+                {pathUrl !== "/contact" &&
+                pathUrl !== "/download" &&
+                pathUrl !== "/about" ? (
                   <>
                     <Image
                       src={
@@ -88,11 +71,30 @@ const Header = () => {
                       width={140}
                       height={30}
                       className="header-logo w-full dark:hidden"
+                      priority
                     />
                     <Image
                       src="/assets/Rahi_LogoW.png"
                       alt="logo"
                       width={140}
+                      height={30}
+                      className="header-logo hidden w-full dark:block"
+                      priority
+                    />
+                  </>
+                ) : (
+                  <>
+                    <Image
+                      src="/assets/Rahi_Logo.png"
+                      alt="logo"
+                      width={240}
+                      height={30}
+                      className="header-logo w-full dark:hidden"
+                    />
+                    <Image
+                      src="/assets/Rahi_Logo.png"
+                      alt="logo"
+                      width={240}
                       height={30}
                       className="header-logo hidden w-full dark:block"
                     />
@@ -147,18 +149,9 @@ const Header = () => {
                   {menuData.map((menuItem, index) =>
                     menuItem.path ? (
                       <li key={index} className="group relative">
-                        {pathUrl !== "/" ? (
-                          <Link
-                            onClick={navbarToggleHandler}
-                            scroll={false}
-                            href={menuItem.path}
-                            className={`ud-menu-scroll flex py-2 text-base text-dark group-hover:text-primary dark:text-white dark:group-hover:text-primary lg:inline-flex lg:px-0 lg:py-6 ${
-                              pathUrl === menuItem?.path && "text-primary"
-                            }`}
-                          >
-                            {menuItem.title}
-                          </Link>
-                        ) : (
+                        {pathUrl !== "/contact" &&
+                        pathUrl !== "/download" &&
+                        pathUrl !== "/about" ? (
                           <Link
                             scroll={false}
                             href={menuItem.path}
@@ -174,14 +167,31 @@ const Header = () => {
                           >
                             {menuItem.title}
                           </Link>
+                        ) : (
+                          <Link
+                            onClick={navbarToggleHandler}
+                            scroll={false}
+                            href={menuItem.path}
+                            className={`ud-menu-scroll flex py-2 text-base text-dark group-hover:text-primary dark:text-white dark:group-hover:text-primary lg:inline-flex lg:px-0 lg:py-6 ${
+                              pathUrl === menuItem?.path && "text-primary"
+                            }`}
+                          >
+                            {menuItem.title}
+                          </Link>
                         )}
                       </li>
                     ) : (
                       <li className="submenu-item group relative" key={index}>
-                        {pathUrl !== "/" ? (
+                        {pathUrl !== "/contact" &&
+                        pathUrl !== "/download" &&
+                        pathUrl !== "/about" ? (
                           <button
                             onClick={() => handleSubmenu(index)}
-                            className={`ud-menu-scroll flex items-center justify-between py-2 text-base text-dark group-hover:text-primary dark:text-white dark:group-hover:text-primary lg:inline-flex lg:px-0 lg:py-6`}
+                            className={`ud-menu-scroll flex items-center justify-between py-2 text-base lg:inline-flex lg:px-0 lg:py-6 ${
+                              sticky
+                                ? "text-dark group-hover:text-primary dark:text-white dark:group-hover:text-primary"
+                                : "text-white"
+                            }`}
                           >
                             {menuItem.title}
                             <span className="pl-1">
@@ -203,11 +213,7 @@ const Header = () => {
                         ) : (
                           <button
                             onClick={() => handleSubmenu(index)}
-                            className={`ud-menu-scroll flex items-center justify-between py-2 text-base lg:inline-flex lg:px-0 lg:py-6 ${
-                              sticky
-                                ? "text-dark group-hover:text-primary dark:text-white dark:group-hover:text-primary"
-                                : "text-white"
-                            }`}
+                            className={`ud-menu-scroll flex items-center justify-between py-2 text-base text-dark group-hover:text-primary dark:text-white dark:group-hover:text-primary lg:inline-flex lg:px-0 lg:py-6`}
                           >
                             {menuItem.title}
                             <span className="pl-1">

@@ -1,8 +1,10 @@
+"use client";
 import { TeamType } from "@/types/team";
 import SectionTitle from "../Common/SectionTitle";
 import SingleTeam from "./SingleTeam";
+import { motion } from "framer-motion";
 
-const teamData: TeamType[] = [
+export const teamData: TeamType[] = [
   {
     id: 1,
     name: "Rajesh Kulkarni",
@@ -45,23 +47,33 @@ const Team = () => {
   return (
     <section
       id="team"
-      className="overflow-hidden bg-gray-1 pb-12 pt-20 dark:bg-dark-2 lg:pb-[90px] lg:pt-[120px]"
+      className="overflow-hidden bg-muted/30 pb-12 pt-20 dark:bg-dark-2 lg:pb-[90px] lg:pt-[120px]"
     >
       <div className="container">
-        <div className="mb-[60px]">
+        <motion.div
+          className="mb-[60px]"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1, duration: 0.6 }}
+        >
           <SectionTitle
-            title="Meet Our Leadership Team"
-            paragraph="At Rahi Industries, our leadership team is committed to innovation, quality, and excellence. With decades of experience in the electrical and manufacturing industry, we drive cutting-edge solutions that power the future."
+            title=" Leadership Team"
+            paragraph="Meet the experts driving our vision forward"
             width="640px"
             center
           />
-        </div>
+        </motion.div>
 
-        <div className="-mx-4 flex flex-wrap justify-center">
+        <motion.div
+          className="-mx-4 flex flex-wrap justify-center"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1, duration: 0.6 }}
+        >
           {teamData.map((team, i) => (
             <SingleTeam key={i} team={team} />
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

@@ -24,7 +24,7 @@ const Clients = () => {
   }, []);
 
   return (
-    <section className="relative flex flex-col items-center justify-center overflow-hidden bg-gray-100 py-10 dark:bg-primary">
+    <section className="relative flex flex-col items-center justify-center overflow-hidden bg-white py-10 dark:bg-primary">
       {/* Title */}
       <h2 className="mb-20 text-center text-2xl   font-bold text-gray-900 dark:text-white md:text-3xl">
         Our Clients
