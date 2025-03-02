@@ -4,5 +4,5 @@ export interface Menu {
   title: string;
   path?: string;
   newTab?: boolean;
-  submenu?: Menu[];
+  menu?: Menu[];
 }

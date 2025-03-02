@@ -192,7 +192,7 @@ const DownloadPage = () => {
         </motion.div>
       </section> */}
 
-      <Breadcrumb pageName="adosh" />
+      <Breadcrumb pageName="adosh"  />
 
       <section className="relative   ">
         <div className="container">

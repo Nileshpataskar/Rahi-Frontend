@@ -8,6 +8,7 @@ import { ThemeProvider } from "next-themes";
 import "../styles/index.css";
 import "../styles/prism-vsc-dark-plus.css";
 import { useEffect, useState } from "react";
+import Navbar from "@/components/Navbar/Navbar";
 
 export default function RootLayout({
   children,
@@ -31,6 +32,7 @@ export default function RootLayout({
           defaultTheme="light"
         >
           <Header />
+          {/* <Navbar /> */}
           {children}
           <Footer />
           <ScrollToTop />

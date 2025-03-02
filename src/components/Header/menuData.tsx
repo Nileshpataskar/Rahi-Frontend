@@ -1,68 +1,127 @@
-import { Menu } from "@/types/menu";
-
+export interface Menu {
+  id: number;
+  title: string;
+  path?: string;
+  newTab?: boolean;
+  menu?: Menu[];
+  subMenu?: { name: string; path: string }[];
+  name?: string;
+}
 const menuData: Menu[] = [
   {
     id: 1,
     title: "Home",
     path: "/",
     newTab: false,
+    
   },
   {
     id: 2,
     title: "Products",
     newTab: false,
-    submenu: [
+    menu: [
       {
         id: 61,
-        title: "MCB Box",
+        title: "ABS Door MCB Box",
         path: "/mcbbox",
         newTab: false,
       },
       {
         id: 62,
-        title: "Modular Metal Box",
+        title: "BUS Bar Chambers",
         path: "/modular_metal_box",
         newTab: false,
+        subMenu: [
+          { name: "Copper BUS Bar Chamber", path: "/a" },
+          { name: "Copper Bus Bar chamber with HRC Fuse base", path: "/b" },
+        ],
       },
       {
         id: 63,
-        title: "Electric Distribution Box",
+        title: "Double Door MCB Box",
         path: "/electric-distribution-box",
         newTab: false,
+        subMenu: [
+          { name: "Prime Series SPN Double Door MCB Box", path: "/a" },
+          { name: "Prime series TPN Double Door MCB Box", path: "/b" },
+          { name: "Standard Series SPN Double Door MCB Box", path: "/b" },
+          { name: "Standard series TPN Double Door MCB Box", path: "/b" },
+        ],
       },
       {
         id: 64,
-        title: "Metal Enclosure",
+        title: "Double door Mcb box with TV-TEL",
         path: "/metalEnclosure",
         newTab: false,
+        subMenu: [
+          { name: "SPN Double Door Mcb box with TV-Tel", path: "/a" },
+          { name: "TPN Double Door Mcb box with TV-Tel", path: "/b" },
+        ],
       },
       {
         id: 66,
-        title: "Bus Bar",
+        title: "ISI PVC Conduit Pipe",
         path: "/busbar",
         newTab: false,
       },
       {
         id: 67,
-        title: "Surface Box",
+        title: "MCB Metal Enclosures",
         path: "/surfacebox",
         newTab: false,
+
+        subMenu: [
+          { name: "ABS Double Door MCB Box", path: "/a" },
+          { name: "PVC MCB Box with Metal Back", path: "/b" },
+          { name: "SPN Metal Enclosures", path: "/b" },
+          { name: "TPN Metal Enclosures", path: "/b" },
+        ],
       },
       {
         id: 68,
-        title: "Conduit PVC Pipes",
+        title: "Modular Double Wall Surface box",
         path: "/conduit-pipe",
         newTab: false,
       },
       {
         id: 69,
-        title: "Conduit PVC Accesories",
+        title: "Modular GI Metal Box",
         path: "/conduit-pipe-accesories",
         newTab: false,
       },
       {
         id: 70,
-        title: "Junction Box",
+        title: "Modular Silver line Gang box",
+        path: "/junction-box",
+        newTab: false,
+      },
+      {
+        id: 71,
+        title: "NOVA SERIES NON ISI PVC Conduit Pipe",
+        path: "/junction-box",
+        newTab: false,
+      },
+      
+      {
+        id: 72,
+        title: "PVC Conduit Pipe Accesaries",
+        path: "/junction-box",
+        newTab: false,
+        subMenu: [
+          { name: "Bend", path: "/a" },
+          { name: "Coupler", path: "/b" },
+          { name: "Deep Junction Box", path: "/b" },
+          { name: "Junction Box", path: "/b" },]
+      },
+      {
+        id: 73,
+        title: "Round Fan Box GI",
+        path: "/junction-box",
+        newTab: false,
+      },
+      {
+        id: 74,
+        title: "Round Plates",
         path: "/junction-box",
         newTab: false,
       },
@@ -86,6 +145,5 @@ const menuData: Menu[] = [
     path: "/contact",
     newTab: false,
   },
- 
 ];
 export default menuData;
