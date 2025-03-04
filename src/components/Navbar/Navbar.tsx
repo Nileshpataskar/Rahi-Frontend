@@ -6,8 +6,11 @@ import menuData from "../Header/menuData";
 import Link from "next/link";
 import Image from "next/image";
 import MobileMenu from "./MobileMenu";
+import { usePathname } from "next/navigation";
 
 const Navbar: React.FC = () => {
+  const pathUrl = usePathname();
+
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<number | null>(null);
@@ -63,43 +66,79 @@ const Navbar: React.FC = () => {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-30 bg-transparent backdrop-blur-md transition-all duration-300 ${
-          scrolled ? "bg-white/80 shadow-md py-2" : "py-4"
+        className={`fixed left-0 right-0 top-0 z-30 bg-transparent backdrop-blur-md transition-all duration-300 ${
+          scrolled ? "bg-white/80 py-2 shadow-md" : "py-4"
         }`}
       >
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between">
             {/* Logo */}
-            <div className="flex items-center">
-              <Link href="/" className="flex items-center">
-                <Image 
-                  src="/vite.svg" 
-                  alt="Logo" 
-                  width={32}
-                  height={32}
-                  className="h-8 w-auto" 
-                />
-                <span className="ml-2 text-xl font-bold bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
-                  Brand
-                </span>
+            <div className="w-52 max-w-full px-4">
+              <Link
+                href="/"
+                className={`navbar-logo block w-full ${scrolled ? "py-2" : "py-5"}`}
+              >
+                {pathUrl !== "/contact" &&
+                pathUrl !== "/download" &&
+                pathUrl !== "/about" ? (
+                  <>
+                    <Image
+                      src={
+                        scrolled
+                          ? "/assets/Rahi_Logo.png"
+                          : "/assets/Rahi_LogoW.png"
+                      }
+                      alt="logo"
+                      width={140}
+                      height={30}
+                      className=" w-full dark:hidden"
+                      priority
+                    />
+                    <Image
+                      src="/assets/Rahi_LogoW.png"
+                      alt="logo"
+                      width={140}
+                      height={30}
+                      className="header-logo hidden w-full dark:block"
+                      priority
+                    />
+                  </>
+                ) : (
+                  <>
+                    <Image
+                      src="/assets/Rahi_Logo.png"
+                      alt="logo"
+                      width={140}
+                      height={30}
+                      className="header-logo w-full dark:hidden"
+                    />
+                    <Image
+                      src="/assets/Rahi_Logo.png"
+                      alt="logo"
+                      width={140}
+                      height={30}
+                      className="header-logo hidden w-full dark:block"
+                    />
+                  </>
+                )}
               </Link>
             </div>
 
             {/* Desktop Navigation */}
-            <nav className="hidden lg:flex items-center space-x-8">
+            <nav className="hidden items-center space-x-8 lg:flex">
               {menuData.map((item) => (
                 <div
                   key={item.id}
-                  className="relative group"
+                  className="group relative"
                   onMouseEnter={() => handleMouseEnter(item.id)}
                   onMouseLeave={handleMouseLeave}
                 >
                   {!item.menu ? (
                     <a
                       href={item.path}
-                      className={`px-4 py-2 text-sm font-medium transition-colors ${
+                      className={`px-4 py-2 text-lg font-medium transition-colors ${
                         item.path === window.location.pathname
-                          ? "text-primary after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-primary"
+                          ? "text-primary after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:bg-primary"
                           : "text-gray-700 hover:text-primary"
                       }`}
                       target={item.newTab ? "_blank" : "_self"}
@@ -110,9 +149,9 @@ const Navbar: React.FC = () => {
                   ) : (
                     <div className="relative">
                       <button
-                        className={`flex items-center space-x-1 px-4 py-2 text-sm font-medium transition-colors ${
+                        className={`flex items-center space-x-1 px-4 py-2 text-lg font-medium transition-colors ${
                           activeDropdown === item.id
-                            ? "text-primary after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-primary"
+                            ? "text-primary after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:bg-primary"
                             : "text-gray-700 hover:text-primary group-hover:text-primary"
                         }`}
                       >
@@ -134,7 +173,7 @@ const Navbar: React.FC = () => {
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: 10 }}
                             transition={{ duration: 0.2 }}
-                            className="absolute right-0 mt-2 w-[600px] bg-white/95 backdrop-blur-sm rounded-lg shadow-xl z-50 border border-gray-100 overflow-hidden"
+                            className="absolute right-0 z-50 mt-2 w-[600px] overflow-hidden rounded-lg border border-gray-100 bg-white/95 shadow-xl backdrop-blur-2xl"
                             style={{ maxWidth: "calc(100vw - 40px)" }}
                           >
                             <div className="grid grid-cols-3 gap-6 p-6">
@@ -149,14 +188,14 @@ const Navbar: React.FC = () => {
                                         className="relative"
                                       >
                                         <div
-                                          className="mb-2 flex items-center justify-between cursor-pointer group/item hover:bg-gray-50 rounded p-1.5"
+                                          className="group/item mb-2 flex cursor-pointer items-center justify-between rounded p-1.5 hover:bg-gray-50"
                                           onClick={() =>
                                             handleSubmenuClick(submenuItem.id)
                                           }
                                         >
                                           <a
                                             href={submenuItem.path}
-                                            className="font-medium text-gray-800 hover:text-primary transition-colors group-hover/item:text-primary text-sm"
+                                            className="text-lg font-medium text-gray-800 transition-colors hover:text-primary group-hover/item:text-primary"
                                             onClick={(e) => {
                                               if (submenuItem.subMenu) {
                                                 e.preventDefault();
@@ -187,7 +226,7 @@ const Navbar: React.FC = () => {
                                                 }}
                                                 exit={{ height: 0, opacity: 0 }}
                                                 transition={{ duration: 0.2 }}
-                                                className="space-y-1 overflow-hidden pl-3 border-l-2 border-primary/20 ml-1"
+                                                className="ml-1 space-y-1 overflow-hidden border-l-2 border-primary/20 pl-3"
                                               >
                                                 {submenuItem.subMenu.map(
                                                   (subItem, idx) => (
@@ -204,11 +243,11 @@ const Navbar: React.FC = () => {
                                                       transition={{
                                                         delay: idx * 0.05,
                                                       }}
-                                                      className="hover:translate-x-1 transition-transform duration-200"
+                                                      className="transition-transform duration-200 hover:translate-x-1"
                                                     >
                                                       <a
                                                         href={subItem.path}
-                                                        className="block text-xs text-gray-600 hover:text-primary transition-colors py-1 hover:bg-gray-50 rounded px-2"
+                                                        className="block rounded px-2 py-1 text-xs text-gray-600 transition-colors hover:bg-gray-50 hover:text-primary"
                                                       >
                                                         {subItem.name}
                                                       </a>
@@ -224,14 +263,14 @@ const Navbar: React.FC = () => {
                                 </div>
                               ))}
                             </div>
-                            <div className="bg-gradient-to-r from-primary/5 to-blue-500/5 p-3 rounded-b-lg border-t border-gray-100 text-center">
+                            <div className="rounded-b-lg border-t border-gray-100 bg-gradient-to-r from-primary/5 to-blue-500/5 p-3 text-center">
                               <a
                                 href="/products"
-                                className="text-xs font-medium text-primary hover:underline inline-flex items-center"
+                                className="inline-flex items-center text-xs font-medium text-primary hover:underline"
                               >
                                 View all products
                                 <svg
-                                  className="w-3 h-3 ml-1"
+                                  className="ml-1 h-3 w-3"
                                   viewBox="0 0 24 24"
                                   fill="none"
                                   xmlns="http://www.w3.org/2000/svg"
@@ -259,7 +298,7 @@ const Navbar: React.FC = () => {
             <Button
               variant="ghost"
               size="icon"
-              className="lg:hidden text-primary hover:bg-primary/10"
+              className="text-primary hover:bg-primary/10 lg:hidden"
               onClick={toggleMobileMenu}
             >
               {isMobileMenuOpen ? (

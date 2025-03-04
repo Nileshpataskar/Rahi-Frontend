@@ -165,10 +165,14 @@ const Header = () => {
                       >
                         <button
                           className={`ud-menu-scroll flex items-center justify-between py-2 text-base lg:inline-flex lg:px-0 lg:py-6 ${
-                            sticky
-                              ? "text-dark group-hover:text-primary dark:text-white dark:group-hover:text-primary"
-                              : "text-white"
-                          }`}
+                            !sticky
+                              ? "text-white"
+                              : pathUrl === "/contact" ||
+                                  pathUrl === "/download" ||
+                                  pathUrl === "/about"
+                                ? "text-black"
+                                : "text-black"
+                          } ${sticky && pathUrl === item?.path ? "text-primary" : ""}`}
                         >
                           {item.title}
                           <motion.span
@@ -316,29 +320,6 @@ const Header = () => {
                                       </div>
                                     ))}
                                   </div>
-                                  <div className="rounded-b-lg border-t border-gray-100 bg-gradient-to-r from-primary/5 to-blue-500/5 p-3 text-center">
-                                    <Link
-                                      href="/products"
-                                      className="inline-flex items-center text-xs font-medium text-primary hover:underline"
-                                      onClick={() => setNavbarOpen(false)}
-                                    >
-                                      View all products
-                                      <svg
-                                        className="ml-1 h-3 w-3"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                      >
-                                        <path
-                                          d="M5 12H19M19 12L12 5M19 12L12 19"
-                                          stroke="currentColor"
-                                          strokeWidth="2"
-                                          strokeLinecap="round"
-                                          strokeLinejoin="round"
-                                        />
-                                      </svg>
-                                    </Link>
-                                  </div>
                                 </>
                               ) : (
                                 // Regular dropdown menu for other items
@@ -442,10 +423,13 @@ const Header = () => {
                           scroll={false}
                           href={item.path || "#"}
                           className={`ud-menu-scroll flex py-2 text-base lg:inline-flex lg:px-0 lg:py-6 ${
-                            sticky
-                              ? "text-dark group-hover:text-primary dark:text-white dark:group-hover:text-primary"
-                              : "text-body-color dark:text-white lg:text-white"
-                          } ${pathUrl === item?.path && sticky && "!text-primary"}`}
+                            item.path &&
+                            pathUrl !== "/contact" &&
+                            pathUrl !== "/download" &&
+                            pathUrl !== "/about"
+                              ? "text-white"
+                              : "text-black"
+                          } ${sticky && pathUrl === item?.path ? "!text-primary" : ""}`}
                         >
                           {item.title}
                         </Link>
