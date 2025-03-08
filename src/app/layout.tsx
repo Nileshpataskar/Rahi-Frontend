@@ -31,8 +31,8 @@ export default function RootLayout({
           enableSystem={false}
           defaultTheme="light"
         >
-          {/* <Header /> */}
-          <Navbar />
+          <Header />
+          {/* <Navbar /> */}
           {children}
           <Footer />
           <ScrollToTop />

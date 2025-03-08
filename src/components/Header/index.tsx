@@ -1,38 +1,61 @@
-"use client";
-import { usePathname } from "next/navigation";
-import Image from "next/image";
-import Link from "next/link";
-import { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, Menu, X } from "lucide-react";
+import { Menu, X, ChevronDown } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import menuData from "./menuData";
+import Link from "next/link";
+import Image from "next/image";
+import MobileMenu from "./MobileMenu";
 
-const Header = () => {
-  const pathUrl = usePathname();
-  const [navbarOpen, setNavbarOpen] = useState(false);
-  const [sticky, setSticky] = useState(false);
+const Navbar: React.FC = () => {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<number | null>(null);
   const [activeSubmenu, setActiveSubmenu] = useState<number | null>(null);
+  const [windowWidth, setWindowWidth] = useState(
+    typeof window !== "undefined" ? window.innerWidth : 0,
+  );
+  const [pathUrl, setPathUrl] = useState("/");
 
-  const navbarToggleHandler = () => {
-    setNavbarOpen(!navbarOpen);
-  };
-
-  const handleStickyNavbar = () => {
-    if (window.scrollY >= 80) {
-      setSticky(true);
-    } else {
-      setSticky(false);
-    }
-  };
-
+  // Set current path
   useEffect(() => {
-    window.addEventListener("scroll", handleStickyNavbar);
-    return () => window.removeEventListener("scroll", handleStickyNavbar);
+    setPathUrl(window.location.pathname);
   }, []);
 
-  const handleMouseEnter = (index: number) => {
-    setActiveDropdown(index);
+  // Handle window resize
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+      if (window.innerWidth >= 1024) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Handle scroll effect
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollThreshold = pathUrl === "/" ? 800 : 300;
+      if (window.scrollY > scrollThreshold) {
+        setScrolled(true);
+      } else {
+        setScrolled(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [pathUrl]);
+
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const handleMouseEnter = (id: number) => {
+    setActiveDropdown(id);
   };
 
   const handleMouseLeave = () => {
@@ -44,22 +67,34 @@ const Header = () => {
     setActiveSubmenu(activeSubmenu === id ? null : id);
   };
 
+  // Dark mode for home page and product pages with black hero sections
+  const isDarkMode =
+    pathUrl === "/" ||
+    pathUrl === "/mcbbox" ||
+    pathUrl === "/electric-distribution-box" ||
+    pathUrl === "/busbar-hrc" ||
+    pathUrl.startsWith("/product");
+
   return (
     <>
       <header
-        className={`ud-header left-0 top-0 z-40 flex w-full items-center ${
-          sticky
-            ? "shadow-nav fixed z-[999] border-b border-stroke bg-white/50 backdrop-blur-[5px] dark:border-dark-3/20 dark:bg-dark/10"
-            : "absolute bg-transparent"
-        }`}
+        className={`fixed left-0 right-0 top-0 z-30 transition-all duration-300 ${
+          scrolled
+            ? isDarkMode
+              ? "bg-[#2d333f]/70 py-3 shadow-md"
+              : "bg-white/90 py-3 shadow-md"
+            : isDarkMode
+              ? "bg-transparent py-6"
+              : "bg-white py-6"
+        } backdrop-blur-md`}
       >
-        <div className="container">
-          <div className="relative -mx-4 flex items-center justify-between">
-            {/* Logo Section */}
-            <div className="w-60 max-w-full px-4">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between">
+            {/* Logo */}
+            <div className="w-40 max-w-full px-4">
               <Link
                 href="/"
-                className={`navbar-logo block w-full ${sticky ? "py-2" : "py-5"}`}
+                className={`navbar-logo block w-full ${scrolled ? "py-2" : "py-5"}`}
               >
                 {pathUrl !== "/contact" &&
                 pathUrl !== "/download" &&
@@ -67,14 +102,14 @@ const Header = () => {
                   <>
                     <Image
                       src={
-                        sticky
-                          ? "/assets/Rahi_Logo.png"
+                        scrolled
+                          ? "/assets/Rahi_LogoW.png"
                           : "/assets/Rahi_LogoW.png"
                       }
                       alt="logo"
                       width={140}
                       height={30}
-                      className="header-logo w-full dark:hidden"
+                      className=" w-28 dark:hidden sm:w-full "
                       priority
                     />
                     <Image
@@ -82,7 +117,7 @@ const Header = () => {
                       alt="logo"
                       width={140}
                       height={30}
-                      className="header-logo hidden w-full dark:block"
+                      className="header-logo hidden w-28 dark:block sm:w-full"
                       priority
                     />
                   </>
@@ -91,359 +126,207 @@ const Header = () => {
                     <Image
                       src="/assets/Rahi_Logo.png"
                       alt="logo"
-                      width={240}
+                      width={140}
                       height={30}
-                      className="header-logo w-full dark:hidden"
+                      className="header-logo w-28 dark:hidden sm:w-full"
                     />
                     <Image
                       src="/assets/Rahi_Logo.png"
                       alt="logo"
-                      width={240}
+                      width={140}
                       height={30}
-                      className="header-logo hidden w-full dark:block"
+                      className="header-logo hidden w-28 dark:block sm:w-full"
                     />
                   </>
                 )}
               </Link>
             </div>
 
-            {/* Navigation Section */}
-            <div className="flex w-full items-center justify-end gap-10 px-4">
-              {/* Mobile Menu Toggle */}
-              <button
-                onClick={navbarToggleHandler}
-                id="navbarToggler"
-                aria-label="Mobile Menu"
-                className="absolute right-4 top-1/2 -translate-y-1/2 rounded-lg px-3 py-[6px] ring-primary focus:ring-2 lg:hidden"
-              >
-                <span
-                  className={`relative my-1.5 block h-0.5 w-[30px] transition-all duration-300 ${
-                    navbarOpen ? "top-[7px] rotate-45" : ""
-                  } ${pathUrl !== "/" && "!bg-dark dark:!bg-white"} ${
-                    pathUrl === "/" && sticky
-                      ? "bg-dark dark:bg-white"
-                      : "bg-white"
-                  }`}
-                />
-                <span
-                  className={`relative my-1.5 block h-0.5 w-[30px] transition-all duration-300 ${
-                    navbarOpen ? "opacity-0" : ""
-                  } ${pathUrl !== "/" && "!bg-dark dark:!bg-white"} ${
-                    pathUrl === "/" && sticky
-                      ? "bg-dark dark:bg-white"
-                      : "bg-white"
-                  }`}
-                />
-                <span
-                  className={`relative my-1.5 block h-0.5 w-[30px] transition-all duration-300 ${
-                    navbarOpen ? "top-[-8px] -rotate-45" : ""
-                  } ${pathUrl !== "/" && "!bg-dark dark:!bg-white"} ${
-                    pathUrl === "/" && sticky
-                      ? "bg-dark dark:bg-white"
-                      : "bg-white"
-                  }`}
-                />
-              </button>
-
-              {/* Main Navigation */}
-              <nav
-                id="navbarCollapse"
-                className={`navbar absolute right-0 z-50 ${
-                  navbarOpen
-                    ? "visible top-full opacity-100"
-                    : "invisible top-[120%] opacity-0"
-                } rounded border-[.5px] border-body-color/50 bg-white px-6 py-4 duration-300 dark:border-body-color/20 dark:bg-dark-2 lg:visible lg:static lg:w-auto lg:border-none lg:!bg-transparent lg:p-0 lg:opacity-100 lg:dark:bg-transparent`}
-              >
-                <ul className="block lg:ml-8 lg:flex lg:gap-x-8 xl:ml-14 xl:gap-x-12">
-                  {menuData.map((item, index) =>
-                    item.menu ? (
-                      <li
-                        key={index}
-                        className="submenu-item group relative"
-                        onMouseEnter={() => handleMouseEnter(index)}
-                        onMouseLeave={handleMouseLeave}
+            {/* Desktop Navigation */}
+            <nav className="hidden items-center space-x-8 lg:flex">
+              {menuData.map((item) => (
+                <div
+                  key={item.id}
+                  className="group relative"
+                  onMouseEnter={() => handleMouseEnter(item.id)}
+                  onMouseLeave={handleMouseLeave}
+                >
+                  {!item.menu ? (
+                    <a
+                      href={item.path}
+                      className={`px-4 py-3 text-lg transition-colors ${
+                        item.path === pathUrl
+                          ? isDarkMode
+                            ? "font-bold text-white"
+                            : "font-bold text-gray-900"
+                          : isDarkMode
+                            ? "text-white hover:font-bold"
+                            : "text-gray-700 hover:text-primary"
+                      }`}
+                      target={item.newTab ? "_blank" : "_self"}
+                      rel={item.newTab ? "noopener noreferrer" : ""}
+                    >
+                      {item.title}
+                    </a>
+                  ) : (
+                    <div className="relative">
+                      <button
+                        className={`flex items-center space-x-1 px-4 py-3 text-lg transition-colors ${
+                          activeDropdown === item.id
+                            ? isDarkMode
+                              ? "font-bold text-white"
+                              : "font-bold text-gray-900"
+                            : isDarkMode
+                              ? "text-white hover:text-primary/90 group-hover:text-primary/90"
+                              : "text-gray-700 hover:text-primary group-hover:text-primary"
+                        }`}
                       >
-                        <button
-                          className={`ud-menu-scroll flex items-center justify-between py-2 text-base lg:inline-flex lg:px-0 lg:py-6 ${
-                            !sticky
-                              ? "text-white"
-                              : pathUrl === "/contact" ||
-                                  pathUrl === "/download" ||
-                                  pathUrl === "/about"
-                                ? "text-black"
-                                : "text-black"
-                          } ${sticky && pathUrl === item?.path ? "text-primary" : ""}`}
+                        <span>{item.title}</span>
+                        <motion.div
+                          animate={{
+                            rotate: activeDropdown === item.id ? 180 : 0,
+                          }}
+                          transition={{ duration: 0.2 }}
                         >
-                          {item.title}
-                          <motion.span
-                            animate={
-                              activeDropdown === index
-                                ? { rotate: 180 }
-                                : { rotate: 0 }
-                            }
-                            transition={{ duration: 0.2 }}
-                            className="pl-1"
-                          >
-                            <ChevronDown />
-                          </motion.span>
-                        </button>
-                        <AnimatePresence>
-                          {activeDropdown === index && (
-                            <motion.div
-                              initial={{ opacity: 0, y: 10 }}
-                              animate={{ opacity: 1, y: 0 }}
-                              exit={{ opacity: 0, y: 10 }}
-                              transition={{ duration: 0.2 }}
-                              className={`absolute right-0 mt-2 ${
-                                item.title === "Products" ? "w-[600px]" : "w-72"
-                              } z-50 overflow-hidden rounded-lg border border-gray-100 bg-white/95 shadow-xl backdrop-blur-sm`}
-                              style={{ maxWidth: "calc(100vw - 40px)" }}
-                            >
-                              {item.title === "Products" ? (
-                                // Products mega menu with grid layout
-                                <>
-                                  <div className="grid grid-cols-1 gap-6 p-6 md:grid-cols-3">
-                                    {[0, 1, 2].map((colIndex) => (
-                                      <div key={colIndex} className="space-y-4">
-                                        {item.menu
-                                          ?.filter(
-                                            (_, idx) => idx % 3 === colIndex,
-                                          )
-                                          .map((submenuItem: any) => (
-                                            <div
-                                              key={
-                                                submenuItem.id ||
-                                                submenuItem.title
-                                              }
-                                              className="relative"
-                                            >
-                                              <div
-                                                className="group/item mb-2 flex cursor-pointer items-center justify-between rounded p-1.5 hover:bg-gray-50"
-                                                onClick={() =>
-                                                  handleSubmenuClick(
-                                                    submenuItem.id ||
-                                                      index * 100 + colIndex,
-                                                  )
-                                                }
-                                              >
-                                                <Link
-                                                  href={submenuItem.path}
-                                                  className="text-sm font-medium text-gray-800 transition-colors hover:text-primary group-hover/item:text-primary"
-                                                  onClick={(e) => {
-                                                    if (submenuItem.subMenu) {
-                                                      e.preventDefault();
-                                                    }
-                                                    setNavbarOpen(false);
-                                                  }}
-                                                >
-                                                  {submenuItem.title}
-                                                </Link>
-                                                {submenuItem.subMenu && (
-                                                  <ChevronDown
-                                                    className={`h-3.5 w-3.5 text-gray-500 transition-transform duration-200 group-hover/item:text-primary ${
-                                                      activeSubmenu ===
-                                                      (submenuItem.id ||
-                                                        index * 100 + colIndex)
-                                                        ? "rotate-180"
-                                                        : ""
-                                                    }`}
-                                                  />
-                                                )}
-                                              </div>
+                          <ChevronDown className="h-4 w-4" />
+                        </motion.div>
+                      </button>
 
-                                              {submenuItem.subMenu && (
-                                                <AnimatePresence>
-                                                  {activeSubmenu ===
-                                                    (submenuItem.id ||
-                                                      index * 100 +
-                                                        colIndex) && (
-                                                    <motion.ul
+                      <AnimatePresence>
+                        {activeDropdown === item.id && (
+                          <motion.div
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: 10 }}
+                            transition={{ duration: 0.2 }}
+                            className="absolute right-0 z-50 mt-2 w-[600px] overflow-hidden rounded-lg border border-gray-100 bg-white/95 shadow-xl backdrop-blur-sm dark:border-gray-700 dark:bg-gray-800/95"
+                            style={{ maxWidth: "calc(100vw - 40px)" }}
+                          >
+                            <div className="grid grid-cols-3 gap-6 p-6">
+                              {/* Group menu items into sections */}
+                              {[0, 1, 2].map((colIndex) => (
+                                <div key={colIndex} className="space-y-4">
+                                  {item.menu
+                                    ?.filter((_, idx) => idx % 3 === colIndex)
+                                    .map((submenuItem) => (
+                                      <div
+                                        key={submenuItem.id}
+                                        className="relative"
+                                      >
+                                        <div
+                                          className="group/item mb-2 flex cursor-pointer items-center justify-between rounded p-1.5 hover:bg-gray-50 dark:hover:bg-gray-700"
+                                          onClick={() =>
+                                            handleSubmenuClick(submenuItem.id)
+                                          }
+                                        >
+                                          <a
+                                            href={submenuItem.path}
+                                            className="text-base font-medium text-gray-800 transition-colors hover:text-primary group-hover/item:text-primary dark:text-gray-200 dark:hover:text-primary"
+                                            onClick={(e) => {
+                                              if (submenuItem.subMenu) {
+                                                e.preventDefault();
+                                              }
+                                            }}
+                                          >
+                                            {submenuItem.title}
+                                          </a>
+                                          {submenuItem.subMenu && (
+                                            <ChevronDown
+                                              className={`h-3.5 w-3.5 text-gray-500 transition-transform duration-200 group-hover/item:text-primary dark:text-gray-400 ${activeSubmenu === submenuItem.id ? "rotate-180" : ""}`}
+                                            />
+                                          )}
+                                        </div>
+
+                                        {submenuItem.subMenu && (
+                                          <AnimatePresence>
+                                            {activeSubmenu ===
+                                              submenuItem.id && (
+                                              <motion.ul
+                                                initial={{
+                                                  height: 0,
+                                                  opacity: 0,
+                                                }}
+                                                animate={{
+                                                  height: "auto",
+                                                  opacity: 1,
+                                                }}
+                                                exit={{ height: 0, opacity: 0 }}
+                                                transition={{ duration: 0.2 }}
+                                                className="ml-1 space-y-1 overflow-hidden border-l-2 border-primary/20 pl-3"
+                                              >
+                                                {submenuItem.subMenu.map(
+                                                  (subItem, idx) => (
+                                                    <motion.li
+                                                      key={idx}
                                                       initial={{
-                                                        height: 0,
+                                                        x: -5,
                                                         opacity: 0,
                                                       }}
                                                       animate={{
-                                                        height: "auto",
+                                                        x: 0,
                                                         opacity: 1,
                                                       }}
-                                                      exit={{
-                                                        height: 0,
-                                                        opacity: 0,
-                                                      }}
                                                       transition={{
-                                                        duration: 0.2,
+                                                        delay: idx * 0.05,
                                                       }}
-                                                      className="ml-1 space-y-1 overflow-hidden border-l-2 border-primary/20 pl-3"
+                                                      className="transition-transform duration-200 hover:translate-x-1"
                                                     >
-                                                      {submenuItem.subMenu.map(
-                                                        (
-                                                          subItem: any,
-                                                          idx: number,
-                                                        ) => (
-                                                          <motion.li
-                                                            key={idx}
-                                                            initial={{
-                                                              x: -5,
-                                                              opacity: 0,
-                                                            }}
-                                                            animate={{
-                                                              x: 0,
-                                                              opacity: 1,
-                                                            }}
-                                                            transition={{
-                                                              delay: idx * 0.05,
-                                                            }}
-                                                            className="transition-transform duration-200 hover:translate-x-1"
-                                                          >
-                                                            <Link
-                                                              href={
-                                                                subItem.path
-                                                              }
-                                                              className="block rounded px-2 py-1 text-xs text-gray-600 transition-colors hover:bg-gray-50 hover:text-primary"
-                                                              onClick={() =>
-                                                                setNavbarOpen(
-                                                                  false,
-                                                                )
-                                                              }
-                                                            >
-                                                              {subItem.name}
-                                                            </Link>
-                                                          </motion.li>
-                                                        ),
-                                                      )}
-                                                    </motion.ul>
-                                                  )}
-                                                </AnimatePresence>
-                                              )}
-                                            </div>
-                                          ))}
-                                      </div>
-                                    ))}
-                                  </div>
-                                </>
-                              ) : (
-                                // Regular dropdown menu for other items
-                                <div className="flex flex-col space-y-1 p-3">
-                                  {item.menu.map((submenuItem: any, i) => (
-                                    <div key={i} className="relative">
-                                      <div
-                                        className="mb-2 flex cursor-pointer items-center justify-between rounded p-1.5 hover:bg-gray-50"
-                                        onClick={() => handleSubmenuClick(i)}
-                                      >
-                                        <Link
-                                          href={submenuItem.path}
-                                          className={`font-medium ${
-                                            pathUrl === submenuItem.path
-                                              ? "text-primary"
-                                              : "text-gray-800 hover:text-primary"
-                                          } text-sm transition-colors`}
-                                          onClick={() => setNavbarOpen(false)}
-                                        >
-                                          {submenuItem.title}
-                                        </Link>
-                                        {submenuItem.subMenu && (
-                                          <ChevronDown
-                                            className={`h-3.5 w-3.5 text-gray-500 transition-transform duration-200 ${
-                                              activeSubmenu === i
-                                                ? "rotate-180"
-                                                : ""
-                                            }`}
-                                          />
+                                                      <a
+                                                        href={subItem.path}
+                                                        className="block rounded px-2 py-1 text-xs text-gray-600 transition-colors hover:bg-gray-50 hover:text-primary dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-primary"
+                                                      >
+                                                        {subItem.name}
+                                                      </a>
+                                                    </motion.li>
+                                                  ),
+                                                )}
+                                              </motion.ul>
+                                            )}
+                                          </AnimatePresence>
                                         )}
                                       </div>
-
-                                      {submenuItem.subMenu && (
-                                        <AnimatePresence>
-                                          {activeSubmenu === i && (
-                                            <motion.ul
-                                              initial={{
-                                                height: 0,
-                                                opacity: 0,
-                                              }}
-                                              animate={{
-                                                height: "auto",
-                                                opacity: 1,
-                                              }}
-                                              exit={{ height: 0, opacity: 0 }}
-                                              transition={{ duration: 0.2 }}
-                                              className="ml-1 space-y-1 overflow-hidden border-l-2 border-primary/20 pl-3"
-                                            >
-                                              {submenuItem.subMenu.map(
-                                                (
-                                                  nestedItem: any,
-                                                  j: number,
-                                                ) => (
-                                                  <motion.li
-                                                    key={j}
-                                                    initial={{
-                                                      x: -5,
-                                                      opacity: 0,
-                                                    }}
-                                                    animate={{
-                                                      x: 0,
-                                                      opacity: 1,
-                                                    }}
-                                                    transition={{
-                                                      delay: j * 0.05,
-                                                    }}
-                                                    className="transition-transform duration-200 hover:translate-x-1"
-                                                  >
-                                                    <Link
-                                                      href={nestedItem.path}
-                                                      className={`block text-xs ${
-                                                        pathUrl ===
-                                                        nestedItem.path
-                                                          ? "text-primary"
-                                                          : "text-gray-600 hover:text-primary"
-                                                      } rounded px-2 py-1 transition-colors hover:bg-gray-50`}
-                                                      onClick={() =>
-                                                        setNavbarOpen(false)
-                                                      }
-                                                    >
-                                                      {nestedItem.name}
-                                                    </Link>
-                                                  </motion.li>
-                                                ),
-                                              )}
-                                            </motion.ul>
-                                          )}
-                                        </AnimatePresence>
-                                      )}
-                                    </div>
-                                  ))}
+                                    ))}
                                 </div>
-                              )}
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
-                      </li>
-                    ) : (
-                      <li key={index} className="group relative">
-                        <Link
-                          scroll={false}
-                          href={item.path || "#"}
-                          className={`ud-menu-scroll flex py-2 text-base lg:inline-flex lg:px-0 lg:py-6 ${
-                            item.path &&
-                            pathUrl !== "/contact" &&
-                            pathUrl !== "/download" &&
-                            pathUrl !== "/about"
-                              ? "text-white"
-                              : "text-black"
-                          } ${sticky && pathUrl === item?.path ? "!text-primary" : ""}`}
-                        >
-                          {item.title}
-                        </Link>
-                      </li>
-                    ),
+                              ))}
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
                   )}
-                </ul>
-              </nav>
-            </div>
+                </div>
+              ))}
+            </nav>
+
+            {/* Mobile Menu Toggle */}
+            <Button
+              variant="ghost"
+              size="icon"
+              className={`lg:hidden ${isDarkMode ? "text-white hover:bg-white/10" : "text-primary hover:bg-primary/10"}`}
+              onClick={toggleMobileMenu}
+            >
+              {isMobileMenuOpen ? (
+                <X className="h-7 w-7" />
+              ) : (
+                <Menu className="h-7 w-7" />
+              )}
+              <span className="sr-only">Menu</span>
+            </Button>
           </div>
         </div>
       </header>
+
+      {/* Mobile Menu */}
+      <MobileMenu
+        isOpen={isMobileMenuOpen}
+        onClose={() => setIsMobileMenuOpen(false)}
+        isDarkMode={isDarkMode}
+      />
+
+      {/* Spacer to prevent content from being hidden under the fixed navbar */}
+      <div className={`h-${scrolled ? "16" : "20"}`}></div>
     </>
   );
 };
 
-export default Header;
+export default Navbar;
